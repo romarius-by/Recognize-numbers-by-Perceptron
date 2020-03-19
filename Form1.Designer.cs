@@ -38,6 +38,7 @@
             this.buttonTeachC = new System.Windows.Forms.Button();
             this.buttonTeachD = new System.Windows.Forms.Button();
             this.buttonRecognize = new System.Windows.Forms.Button();
+            this.labelResult = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -87,7 +88,6 @@
             // 
             // buttonTeachA
             // 
-            this.buttonTeachA.Enabled = false;
             this.buttonTeachA.Location = new System.Drawing.Point(12, 396);
             this.buttonTeachA.Name = "buttonTeachA";
             this.buttonTeachA.Size = new System.Drawing.Size(138, 42);
@@ -97,7 +97,6 @@
             // 
             // buttonTeachB
             // 
-            this.buttonTeachB.Enabled = false;
             this.buttonTeachB.Location = new System.Drawing.Point(156, 396);
             this.buttonTeachB.Name = "buttonTeachB";
             this.buttonTeachB.Size = new System.Drawing.Size(138, 42);
@@ -107,7 +106,6 @@
             // 
             // buttonTeachC
             // 
-            this.buttonTeachC.Enabled = false;
             this.buttonTeachC.Location = new System.Drawing.Point(300, 396);
             this.buttonTeachC.Name = "buttonTeachC";
             this.buttonTeachC.Size = new System.Drawing.Size(138, 42);
@@ -117,7 +115,6 @@
             // 
             // buttonTeachD
             // 
-            this.buttonTeachD.Enabled = false;
             this.buttonTeachD.Location = new System.Drawing.Point(444, 396);
             this.buttonTeachD.Name = "buttonTeachD";
             this.buttonTeachD.Size = new System.Drawing.Size(138, 42);
@@ -127,7 +124,6 @@
             // 
             // buttonRecognize
             // 
-            this.buttonRecognize.Enabled = false;
             this.buttonRecognize.Location = new System.Drawing.Point(650, 12);
             this.buttonRecognize.Name = "buttonRecognize";
             this.buttonRecognize.Size = new System.Drawing.Size(138, 42);
@@ -136,11 +132,20 @@
             this.buttonRecognize.UseVisualStyleBackColor = true;
             this.buttonRecognize.Click += new System.EventHandler(this.ButtonRecognize_Click);
             // 
+            // labelResult
+            // 
+            this.labelResult.AutoSize = true;
+            this.labelResult.Location = new System.Drawing.Point(650, 78);
+            this.labelResult.Name = "labelResult";
+            this.labelResult.Size = new System.Drawing.Size(0, 17);
+            this.labelResult.TabIndex = 9;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.labelResult);
             this.Controls.Add(this.buttonRecognize);
             this.Controls.Add(this.buttonTeachD);
             this.Controls.Add(this.buttonTeachC);
@@ -154,6 +159,7 @@
             this.Text = "Form1";
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -168,6 +174,7 @@
         private System.Windows.Forms.Button buttonTeachC;
         private System.Windows.Forms.Button buttonTeachD;
         private System.Windows.Forms.Button buttonRecognize;
+        private System.Windows.Forms.Label labelResult;
     }
 }
 

@@ -18,33 +18,56 @@ namespace Kovaleva_lab_sem6
             InitializeComponent();
         }
 
-        public MatrixMain ClassA = new MatrixMain();
+        public NumberSign TypeA = new NumberSign(1, 1);
+        public NumberSign TypeB = new NumberSign(0, 0);
+        public NumberSign TypeC = new NumberSign(1, 0);
+        public NumberSign TypeD = new NumberSign(0, 1);
+
+        public MatrixMain Perceptrone = new MatrixMain();
+
+        const int numLines = 900;
+        const int numElementsInLine = 150;
+        const int firstBound = 0;
+        const int secondBound = 0;
+        const int thirdBound = 0;
+
+        int R1;
+        int R2;
+
+        int[,] Rij = new int[numLines, numElementsInLine];
+        int[] lyambda = new int[numElementsInLine];
+        int[] y = new int[numElementsInLine];
+        int[] pictureArray = new int[numElementsInLine];
+
         static string baseFolder = AppDomain.CurrentDomain.BaseDirectory;
-        string constsPath = Path.Combine(baseFolder, "consts.txt");
+        string connectionsFile = Path.Combine(baseFolder, "connections.txt");
+        string lyambdaFile = Path.Combine(baseFolder, "lyambda.txt");
 
         private void ButtonUploadImage_Click(object sender, EventArgs e)
         {
             uploadImageDialog.ShowDialog();
             string picture = uploadImageDialog.FileName;
             pictureBox1.Image = Image.FromFile(picture);
-            ClassA.picturemass = CreateBit(pictureBox1.Image);
+            pictureArray = CreateBit(pictureBox1.Image);
 
-            if (!File.Exists(constsPath))
+            if (!(File.Exists(connectionsFile) && File.Exists(lyambdaFile)))
                 buttonCreateConsts.Enabled = true;
-            FileStream fs = File.OpenRead(constsPath);
-            //ClassA.ReadConstLyambda(fs);
         }
 
         private void ButtonCreateConsts_Click(object sender, EventArgs e)
         {
-            FileStream fs = File.OpenRead(constsPath);
-            //StreamWriter sw = new StreamWriter(fs);
-            StreamReader sr = new StreamReader(fs);
-            //ClassA.Create(900, 150);
-            ClassA.ReadFromFile(sr);
-            //ClassA.ReadFromFile(sr,901,150);
-            //ClassA.CreateConstMatrix(fs);
-            //ClassA.CreateConstLyambda(fs);
+            FileStream fs1 = File.Create(connectionsFile);
+            StreamWriter sw1 = new StreamWriter(fs1);
+            Rij = Perceptrone.Create(numLines, numElementsInLine);
+            Perceptrone.WriteToFile(sw1, Rij, numLines, numElementsInLine);
+            sw1.Close();
+
+            FileStream fs2 = File.Create(lyambdaFile);
+            StreamWriter sw2 = new StreamWriter(fs2);
+            lyambda = Perceptrone.Create(numElementsInLine);
+            Perceptrone.WriteToFile(sw2, lyambda, numElementsInLine);
+            sw2.Close();
+
             buttonCreateConsts.Enabled = false;
         }
 
@@ -70,17 +93,27 @@ namespace Kovaleva_lab_sem6
 
         private void ButtonRecognize_Click(object sender, EventArgs e)
         {
+            y = Perceptrone.CalculateY(numLines, numElementsInLine, Rij, pictureArray);
+            R1 = Perceptrone.GetSignal(firstBound, secondBound, lyambda, y);
+            R2 = Perceptrone.GetSignal(secondBound, thirdBound, lyambda, y);
+            if (TypeA.Checker(R1, R2))
+                labelResult.Text = "Это 0";
+            else if (TypeB.Checker(R1, R2))
+                labelResult.Text = "Это 1";
+            else if (TypeC.Checker(R1, R2))
+                labelResult.Text = "Это 3";
+            else if (TypeD.Checker(R1, R2))
+                labelResult.Text = "Это 5";
 
         }
     }
 
     public class MatrixMain
     {
-        Random rand = new Random();
-        public int[] picturemass = new int[900];
 
         public int[,] Create(int numLines, int numElementsInLine)
         {
+            Random rand = new Random();
             int placeInLine;
             int decision;
             int[,] Rij = new int[numLines, numElementsInLine];
@@ -101,6 +134,7 @@ namespace Kovaleva_lab_sem6
 
         public int[] Create(int numElementsInLine)
         {
+            Random rand = new Random();
             int decision;
             int[] lyambda = new int[numElementsInLine];
 
@@ -112,24 +146,24 @@ namespace Kovaleva_lab_sem6
             return lyambda;
         }
 
-        public void WriteToFile(StreamWriter sw, int[,] Rij, int numLines, int numElementsInLine)
+        public void WriteToFile(StreamWriter sw, int[,] array2D, int numLines, int numElementsInLine)
         {
             for (int i = 0; i < numLines; i++)
             {
                 for (int j = 0; j < numElementsInLine; j++)
                 {
-                    sw.Write(Rij[i, j] + " ");
+                    sw.Write(array2D[i, j] + " ");
                 }
                 sw.WriteLine();
             }
             sw.Flush();
         }
 
-        public void WriteToFile(StreamWriter sw, int[] lyambda, int numElementsInLine)
+        public void WriteToFile(StreamWriter sw, int[] array, int numElementsInLine)
         {
             for (int j = 0; j < numElementsInLine; j++)
             {
-                sw.Write(lyambda[j] + " ");
+                sw.Write(array[j] + " ");
             }
             sw.WriteLine();
             sw.Flush();
@@ -223,7 +257,7 @@ namespace Kovaleva_lab_sem6
 
         }*/
 
-        public int[] CountY(int numLines, int numElementsInLine, int[,] Rij, int[] pictureArray)
+        public int[] CalculateY(int numLines, int numElementsInLine, int[,] Rij, int[] pictureArray)
         {
             int sumy;
             const int teta = 1;
@@ -243,13 +277,33 @@ namespace Kovaleva_lab_sem6
 
         public int GetSignal(int lowerBound, int upperBound, int[] lyambda, int[] y)
         {
-            int sum=0;
-            for (int i=lowerBound; i<upperBound; i++)
+            int sum = 0;
+            for (int i = lowerBound; i < upperBound; i++)
             {
                 sum += lyambda[i] * y[i];
             }
             int R = (sum) >= 0 ? 1 : 0;
             return R;
+        }
+    }
+
+    public class NumberSign : MatrixMain
+    {
+        private int R1;
+        private int R2;
+
+        public NumberSign(int R1, int R2)
+        {
+            this.R1 = R1;
+            this.R2 = R2;
+        }
+
+        public bool Checker(int testR1, int testR2)
+        {
+            if (R1 == testR1 && R2 == testR2)
+                return true;
+            else
+                return false;
         }
     }
 }
