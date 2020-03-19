@@ -28,8 +28,8 @@ namespace Kovaleva_lab_sem6
         const int numLines = 900;
         const int numElementsInLine = 150;
         const int firstBound = 0;
-        const int secondBound = 0;
-        const int thirdBound = 0;
+        const int secondBound = 75;
+        const int thirdBound = 150;
 
         int R1;
         int R2;
@@ -45,13 +45,18 @@ namespace Kovaleva_lab_sem6
 
         private void ButtonUploadImage_Click(object sender, EventArgs e)
         {
+            listBoxBit.Items.Clear();
+            labelResult.ResetText();
             uploadImageDialog.ShowDialog();
             string picture = uploadImageDialog.FileName;
+
             pictureBox1.Image = Image.FromFile(picture);
             pictureArray = CreateBit(pictureBox1.Image);
 
             if (!(File.Exists(connectionsFile) && File.Exists(lyambdaFile)))
                 buttonCreateConsts.Enabled = true;
+            if (buttonCreateConsts.Enabled)
+                buttonDownloadConsts.Enabled = false;
         }
 
         private void ButtonCreateConsts_Click(object sender, EventArgs e)
@@ -105,6 +110,61 @@ namespace Kovaleva_lab_sem6
             else if (TypeD.Checker(R1, R2))
                 labelResult.Text = "Это 5";
 
+        }
+
+        private void ButtonDownloadConsts_Click(object sender, EventArgs e)
+        {
+            FileStream fs1 = File.OpenRead(connectionsFile);
+            StreamReader sr1 = new StreamReader(fs1);
+            Rij = Perceptrone.ReadFromFile(sr1, numLines, numElementsInLine);
+
+            FileStream fs2 = File.OpenRead(lyambdaFile);
+            StreamReader sr2 = new StreamReader(fs2);
+            lyambda = Perceptrone.ReadFromFile(sr2);
+        }
+
+        private void ButtonTeachA_Click(object sender, EventArgs e)
+        {
+            lyambda = Perceptrone.Teach(lyambda, TypeA.CalculateDelta(TypeA.R1), firstBound, secondBound);
+            lyambda = Perceptrone.Teach(lyambda, TypeA.CalculateDelta(TypeA.R2), secondBound, thirdBound);
+
+            FileStream fs = File.Create(lyambdaFile);
+            StreamWriter sw = new StreamWriter(fs);
+            Perceptrone.WriteToFile(sw, lyambda, numElementsInLine);
+            sw.Close();
+        }
+
+        private void ButtonTeachB_Click(object sender, EventArgs e)
+        {
+            lyambda = Perceptrone.Teach(lyambda, TypeB.CalculateDelta(TypeB.R1), firstBound, secondBound);
+            lyambda = Perceptrone.Teach(lyambda, TypeB.CalculateDelta(TypeB.R2), secondBound, thirdBound);
+
+            FileStream fs = File.Create(lyambdaFile);
+            StreamWriter sw = new StreamWriter(fs);
+            Perceptrone.WriteToFile(sw, lyambda, numElementsInLine);
+            sw.Close();
+        }
+
+        private void ButtonTeachC_Click(object sender, EventArgs e)
+        {
+            lyambda = Perceptrone.Teach(lyambda, TypeC.CalculateDelta(TypeC.R1), firstBound, secondBound);
+            lyambda = Perceptrone.Teach(lyambda, TypeC.CalculateDelta(TypeC.R2), secondBound, thirdBound);
+
+            FileStream fs = File.Create(lyambdaFile);
+            StreamWriter sw = new StreamWriter(fs);
+            Perceptrone.WriteToFile(sw, lyambda, numElementsInLine);
+            sw.Close();
+        }
+
+        private void ButtonTeachD_Click(object sender, EventArgs e)
+        {
+            lyambda = Perceptrone.Teach(lyambda, TypeD.CalculateDelta(TypeD.R1), firstBound, secondBound);
+            lyambda = Perceptrone.Teach(lyambda, TypeD.CalculateDelta(TypeD.R2), secondBound, thirdBound);
+
+            FileStream fs = File.Create(lyambdaFile);
+            StreamWriter sw = new StreamWriter(fs);
+            Perceptrone.WriteToFile(sw, lyambda, numElementsInLine);
+            sw.Close();
         }
     }
 
@@ -169,45 +229,6 @@ namespace Kovaleva_lab_sem6
             sw.Flush();
         }
 
-        /* public void CreateConstMatrix(FileStream fs)
-         {
-             StreamWriter sw = new StreamWriter(fs);
-             for (int i = 0; i < 900; i++)
-             {
-                 for (int j = 0; j < 150; j++)
-                 {
-                     Rij[i, j] = 0;
-                 }
-                 xplace = rand.Next(0, 150);
-                 decision = rand.Next(0, 2);
-                 Rij[i, xplace] = (decision == 0) ? 1 : -1;
-             }
-
-             for (int i = 0; i < 900; i++)
-             {
-                 for (int j = 0; j < 150; j++)
-                 {
-                     sw.Write(Rij[i, j] + " ");
-                 }
-                 sw.WriteLine();
-             }
-             sw.Flush();
-         }
-
-        public void CreateConstLyambda(FileStream fs)
-        {
-            StreamWriter sw = new StreamWriter(fs);
-            for (int j = 0; j < 150; j++)
-            {
-                decision = rand.Next(0, 2);
-                lyambda[j] = (decision == 0) ? 1 : -1;
-                sw.Write(lyambda[j] + " ");
-                Console.WriteLine(lyambda[j]);
-            }
-            sw.WriteLine();
-            sw.Flush();
-        }*/
-
         public int[,] ReadFromFile(StreamReader sr, int numLines, int numElementsInLine)
         {
             int[,] arrayRes = new int[numLines, numElementsInLine];
@@ -217,9 +238,7 @@ namespace Kovaleva_lab_sem6
                 for (int i = 0; i < numElementsInLine; i++)
                 {
                     arrayRes[j, i] = int.Parse(nums[i]);
-                    Console.Write(arrayRes[j, i]);
                 }
-                Console.WriteLine();
             }
             sr.Close();
             return arrayRes;
@@ -232,30 +251,10 @@ namespace Kovaleva_lab_sem6
             for (int i = 0; i < nums.Length; i++)
             {
                 arrayRes[i] = int.Parse(nums[i]);
-                Console.Write(arrayRes[i]);
             }
-            Console.WriteLine();
             sr.Close();
             return arrayRes;
         }
-        /*
-        public void ReadConstLyambda(FileStream fs)
-        {
-            StreamReader sr = new StreamReader(fs, Encoding.Default);
-            for (int j = 0; j < 901; j++)
-            {
-                string[] words = sr.ReadLine().Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-                int[] array = new int[words.Length];
-                for (int i = 0; i < array.Length; i++)
-                {
-                    array[i] = int.Parse(words[i]);
-                    Console.Write(array[i]);
-                }
-                Console.WriteLine();
-            }
-            sr.Close();
-
-        }*/
 
         public int[] CalculateY(int numLines, int numElementsInLine, int[,] Rij, int[] pictureArray)
         {
@@ -275,6 +274,15 @@ namespace Kovaleva_lab_sem6
             return y;
         }
 
+        public int[] Teach(int[] lyambda, int deltaLyambda, int lowerBound, int upperBound)
+        {
+            for (int i = lowerBound; i < upperBound; i++)
+            {
+                lyambda[i] += deltaLyambda;
+            }
+            return lyambda;
+        }
+
         public int GetSignal(int lowerBound, int upperBound, int[] lyambda, int[] y)
         {
             int sum = 0;
@@ -289,13 +297,23 @@ namespace Kovaleva_lab_sem6
 
     public class NumberSign : MatrixMain
     {
-        private int R1;
-        private int R2;
+        private int r1;
+        private int r2;
 
-        public NumberSign(int R1, int R2)
+        public NumberSign(int r1, int r2)
         {
-            this.R1 = R1;
-            this.R2 = R2;
+            this.r1 = r1;
+            this.r2 = r2;
+        }
+
+        public int R1
+        {
+            get { return r1; }
+        }
+
+        public int R2
+        {
+            get { return r2; }
         }
 
         public bool Checker(int testR1, int testR2)
@@ -305,5 +323,16 @@ namespace Kovaleva_lab_sem6
             else
                 return false;
         }
+
+        public int CalculateDelta(int R)
+        {
+            int delta;
+            if (R == 1)
+                delta = 1;
+            else
+                delta = -1;
+            return delta;
+        }
+
     }
 }

@@ -39,6 +39,7 @@
             this.buttonTeachD = new System.Windows.Forms.Button();
             this.buttonRecognize = new System.Windows.Forms.Button();
             this.labelResult = new System.Windows.Forms.Label();
+            this.buttonDownloadConsts = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -94,6 +95,7 @@
             this.buttonTeachA.TabIndex = 4;
             this.buttonTeachA.Text = "Teach A";
             this.buttonTeachA.UseVisualStyleBackColor = true;
+            this.buttonTeachA.Click += new System.EventHandler(this.ButtonTeachA_Click);
             // 
             // buttonTeachB
             // 
@@ -103,6 +105,7 @@
             this.buttonTeachB.TabIndex = 5;
             this.buttonTeachB.Text = "Teach B";
             this.buttonTeachB.UseVisualStyleBackColor = true;
+            this.buttonTeachB.Click += new System.EventHandler(this.ButtonTeachB_Click);
             // 
             // buttonTeachC
             // 
@@ -112,6 +115,7 @@
             this.buttonTeachC.TabIndex = 6;
             this.buttonTeachC.Text = "Teach C";
             this.buttonTeachC.UseVisualStyleBackColor = true;
+            this.buttonTeachC.Click += new System.EventHandler(this.ButtonTeachC_Click);
             // 
             // buttonTeachD
             // 
@@ -121,6 +125,7 @@
             this.buttonTeachD.TabIndex = 7;
             this.buttonTeachD.Text = "Teach D";
             this.buttonTeachD.UseVisualStyleBackColor = true;
+            this.buttonTeachD.Click += new System.EventHandler(this.ButtonTeachD_Click);
             // 
             // buttonRecognize
             // 
@@ -140,11 +145,22 @@
             this.labelResult.Size = new System.Drawing.Size(0, 17);
             this.labelResult.TabIndex = 9;
             // 
+            // buttonDownloadConsts
+            // 
+            this.buttonDownloadConsts.Location = new System.Drawing.Point(650, 348);
+            this.buttonDownloadConsts.Name = "buttonDownloadConsts";
+            this.buttonDownloadConsts.Size = new System.Drawing.Size(138, 42);
+            this.buttonDownloadConsts.TabIndex = 10;
+            this.buttonDownloadConsts.Text = "Download Constants";
+            this.buttonDownloadConsts.UseVisualStyleBackColor = true;
+            this.buttonDownloadConsts.Click += new System.EventHandler(this.ButtonDownloadConsts_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.buttonDownloadConsts);
             this.Controls.Add(this.labelResult);
             this.Controls.Add(this.buttonRecognize);
             this.Controls.Add(this.buttonTeachD);
@@ -175,6 +191,7 @@
         private System.Windows.Forms.Button buttonTeachD;
         private System.Windows.Forms.Button buttonRecognize;
         private System.Windows.Forms.Label labelResult;
+        private System.Windows.Forms.Button buttonDownloadConsts;
     }
 }
 
