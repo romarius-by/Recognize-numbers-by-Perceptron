@@ -93,7 +93,7 @@
             this.buttonTeachA.Name = "buttonTeachA";
             this.buttonTeachA.Size = new System.Drawing.Size(138, 42);
             this.buttonTeachA.TabIndex = 4;
-            this.buttonTeachA.Text = "Teach A";
+            this.buttonTeachA.Text = "Teach 0";
             this.buttonTeachA.UseVisualStyleBackColor = true;
             this.buttonTeachA.Click += new System.EventHandler(this.ButtonTeachA_Click);
             // 
@@ -103,7 +103,7 @@
             this.buttonTeachB.Name = "buttonTeachB";
             this.buttonTeachB.Size = new System.Drawing.Size(138, 42);
             this.buttonTeachB.TabIndex = 5;
-            this.buttonTeachB.Text = "Teach B";
+            this.buttonTeachB.Text = "Teach 1";
             this.buttonTeachB.UseVisualStyleBackColor = true;
             this.buttonTeachB.Click += new System.EventHandler(this.ButtonTeachB_Click);
             // 
@@ -113,7 +113,7 @@
             this.buttonTeachC.Name = "buttonTeachC";
             this.buttonTeachC.Size = new System.Drawing.Size(138, 42);
             this.buttonTeachC.TabIndex = 6;
-            this.buttonTeachC.Text = "Teach C";
+            this.buttonTeachC.Text = "Teach 3";
             this.buttonTeachC.UseVisualStyleBackColor = true;
             this.buttonTeachC.Click += new System.EventHandler(this.ButtonTeachC_Click);
             // 
@@ -123,7 +123,7 @@
             this.buttonTeachD.Name = "buttonTeachD";
             this.buttonTeachD.Size = new System.Drawing.Size(138, 42);
             this.buttonTeachD.TabIndex = 7;
-            this.buttonTeachD.Text = "Teach D";
+            this.buttonTeachD.Text = "Teach 5";
             this.buttonTeachD.UseVisualStyleBackColor = true;
             this.buttonTeachD.Click += new System.EventHandler(this.ButtonTeachD_Click);
             // 

@@ -42,6 +42,7 @@ namespace Kovaleva_lab_sem6
         static string baseFolder = AppDomain.CurrentDomain.BaseDirectory;
         string connectionsFile = Path.Combine(baseFolder, "connections.txt");
         string lyambdaFile = Path.Combine(baseFolder, "lyambda.txt");
+        string yFile = Path.Combine(baseFolder, "y.txt");
 
         private void ButtonUploadImage_Click(object sender, EventArgs e)
         {
@@ -109,7 +110,6 @@ namespace Kovaleva_lab_sem6
                 labelResult.Text = "Это 3";
             else if (TypeD.Checker(R1, R2))
                 labelResult.Text = "Это 5";
-
         }
 
         private void ButtonDownloadConsts_Click(object sender, EventArgs e)
@@ -128,10 +128,12 @@ namespace Kovaleva_lab_sem6
             lyambda = Perceptrone.Teach(lyambda, TypeA.CalculateDelta(TypeA.R1), firstBound, secondBound);
             lyambda = Perceptrone.Teach(lyambda, TypeA.CalculateDelta(TypeA.R2), secondBound, thirdBound);
 
-            FileStream fs = File.Create(lyambdaFile);
-            StreamWriter sw = new StreamWriter(fs);
+            StreamWriter sw = File.AppendText(lyambdaFile);
             Perceptrone.WriteToFile(sw, lyambda, numElementsInLine);
             sw.Close();
+            StreamWriter sw2 = File.AppendText(yFile);
+            Perceptrone.WriteToFile(sw2, y, numElementsInLine);
+            sw2.Close();
         }
 
         private void ButtonTeachB_Click(object sender, EventArgs e)
@@ -139,10 +141,12 @@ namespace Kovaleva_lab_sem6
             lyambda = Perceptrone.Teach(lyambda, TypeB.CalculateDelta(TypeB.R1), firstBound, secondBound);
             lyambda = Perceptrone.Teach(lyambda, TypeB.CalculateDelta(TypeB.R2), secondBound, thirdBound);
 
-            FileStream fs = File.Create(lyambdaFile);
-            StreamWriter sw = new StreamWriter(fs);
+            StreamWriter sw = File.AppendText(lyambdaFile);
             Perceptrone.WriteToFile(sw, lyambda, numElementsInLine);
             sw.Close();
+            StreamWriter sw2 = File.AppendText(yFile);
+            Perceptrone.WriteToFile(sw2, y, numElementsInLine);
+            sw2.Close();
         }
 
         private void ButtonTeachC_Click(object sender, EventArgs e)
@@ -150,10 +154,12 @@ namespace Kovaleva_lab_sem6
             lyambda = Perceptrone.Teach(lyambda, TypeC.CalculateDelta(TypeC.R1), firstBound, secondBound);
             lyambda = Perceptrone.Teach(lyambda, TypeC.CalculateDelta(TypeC.R2), secondBound, thirdBound);
 
-            FileStream fs = File.Create(lyambdaFile);
-            StreamWriter sw = new StreamWriter(fs);
+            StreamWriter sw = File.AppendText(lyambdaFile);
             Perceptrone.WriteToFile(sw, lyambda, numElementsInLine);
             sw.Close();
+            StreamWriter sw2 = File.AppendText(yFile);
+            Perceptrone.WriteToFile(sw2, y, numElementsInLine);
+            sw2.Close();
         }
 
         private void ButtonTeachD_Click(object sender, EventArgs e)
@@ -161,10 +167,12 @@ namespace Kovaleva_lab_sem6
             lyambda = Perceptrone.Teach(lyambda, TypeD.CalculateDelta(TypeD.R1), firstBound, secondBound);
             lyambda = Perceptrone.Teach(lyambda, TypeD.CalculateDelta(TypeD.R2), secondBound, thirdBound);
 
-            FileStream fs = File.Create(lyambdaFile);
-            StreamWriter sw = new StreamWriter(fs);
+            StreamWriter sw = File.AppendText(lyambdaFile);
             Perceptrone.WriteToFile(sw, lyambda, numElementsInLine);
             sw.Close();
+            StreamWriter sw2 = File.AppendText(yFile);
+            Perceptrone.WriteToFile(sw2, y, numElementsInLine);
+            sw2.Close();
         }
     }
 
@@ -297,24 +305,15 @@ namespace Kovaleva_lab_sem6
 
     public class NumberSign : MatrixMain
     {
-        private int r1;
-        private int r2;
-
-        public NumberSign(int r1, int r2)
+        public NumberSign(int R1, int R2)
         {
-            this.r1 = r1;
-            this.r2 = r2;
+            this.R1 = R1;
+            this.R2 = R2;
         }
 
-        public int R1
-        {
-            get { return r1; }
-        }
+        public int R1 { get; }
 
-        public int R2
-        {
-            get { return r2; }
-        }
+        public int R2 { get; }
 
         public bool Checker(int testR1, int testR2)
         {
@@ -333,6 +332,5 @@ namespace Kovaleva_lab_sem6
                 delta = -1;
             return delta;
         }
-
     }
 }
