@@ -40,6 +40,10 @@
             this.buttonRecognize = new System.Windows.Forms.Button();
             this.labelResult = new System.Windows.Forms.Label();
             this.buttonDownloadConsts = new System.Windows.Forms.Button();
+            this.labelR1 = new System.Windows.Forms.Label();
+            this.labelR2 = new System.Windows.Forms.Label();
+            this.labelSum1 = new System.Windows.Forms.Label();
+            this.labelSum2 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -155,11 +159,47 @@
             this.buttonDownloadConsts.UseVisualStyleBackColor = true;
             this.buttonDownloadConsts.Click += new System.EventHandler(this.ButtonDownloadConsts_Click);
             // 
+            // labelR1
+            // 
+            this.labelR1.AutoSize = true;
+            this.labelR1.Location = new System.Drawing.Point(12, 231);
+            this.labelR1.Name = "labelR1";
+            this.labelR1.Size = new System.Drawing.Size(0, 17);
+            this.labelR1.TabIndex = 11;
+            // 
+            // labelR2
+            // 
+            this.labelR2.AutoSize = true;
+            this.labelR2.Location = new System.Drawing.Point(64, 231);
+            this.labelR2.Name = "labelR2";
+            this.labelR2.Size = new System.Drawing.Size(0, 17);
+            this.labelR2.TabIndex = 12;
+            // 
+            // labelSum1
+            // 
+            this.labelSum1.AutoSize = true;
+            this.labelSum1.Location = new System.Drawing.Point(12, 255);
+            this.labelSum1.Name = "labelSum1";
+            this.labelSum1.Size = new System.Drawing.Size(0, 17);
+            this.labelSum1.TabIndex = 13;
+            // 
+            // labelSum2
+            // 
+            this.labelSum2.AutoSize = true;
+            this.labelSum2.Location = new System.Drawing.Point(80, 255);
+            this.labelSum2.Name = "labelSum2";
+            this.labelSum2.Size = new System.Drawing.Size(0, 17);
+            this.labelSum2.TabIndex = 14;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.labelSum2);
+            this.Controls.Add(this.labelSum1);
+            this.Controls.Add(this.labelR2);
+            this.Controls.Add(this.labelR1);
             this.Controls.Add(this.buttonDownloadConsts);
             this.Controls.Add(this.labelResult);
             this.Controls.Add(this.buttonRecognize);
@@ -192,6 +232,10 @@
         private System.Windows.Forms.Button buttonRecognize;
         private System.Windows.Forms.Label labelResult;
         private System.Windows.Forms.Button buttonDownloadConsts;
+        private System.Windows.Forms.Label labelR1;
+        private System.Windows.Forms.Label labelR2;
+        private System.Windows.Forms.Label labelSum1;
+        private System.Windows.Forms.Label labelSum2;
     }
 }
 

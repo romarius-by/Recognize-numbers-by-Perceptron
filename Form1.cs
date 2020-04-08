@@ -1,13 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
+
 
 namespace Kovaleva_lab_sem6
 {
@@ -23,8 +18,6 @@ namespace Kovaleva_lab_sem6
         public NumberSign TypeC = new NumberSign(1, 0);
         public NumberSign TypeD = new NumberSign(0, 1);
 
-        public MatrixMain Perceptrone = new MatrixMain();
-
         const int numLines = 900;
         const int numElementsInLine = 150;
         const int firstBound = 0;
@@ -33,6 +26,8 @@ namespace Kovaleva_lab_sem6
 
         int R1;
         int R2;
+        int sum1;
+        int sum2;
 
         int[,] Rij = new int[numLines, numElementsInLine];
         int[] lyambda = new int[numElementsInLine];
@@ -40,9 +35,9 @@ namespace Kovaleva_lab_sem6
         int[] pictureArray = new int[numElementsInLine];
 
         static string baseFolder = AppDomain.CurrentDomain.BaseDirectory;
-        string connectionsFile = Path.Combine(baseFolder, "connections.txt");
-        string lyambdaFile = Path.Combine(baseFolder, "lyambda.txt");
-        string yFile = Path.Combine(baseFolder, "y.txt");
+        string connectionsFile = Path.Combine(baseFolder, "connections.xls");
+        string lyambdaFile = Path.Combine(baseFolder, "lyambda.xls");
+        string yFile = Path.Combine(baseFolder, "y.xls");
 
         private void ButtonUploadImage_Click(object sender, EventArgs e)
         {
@@ -62,17 +57,11 @@ namespace Kovaleva_lab_sem6
 
         private void ButtonCreateConsts_Click(object sender, EventArgs e)
         {
-            FileStream fs1 = File.Create(connectionsFile);
-            StreamWriter sw1 = new StreamWriter(fs1);
             Rij = Perceptrone.Create(numLines, numElementsInLine);
-            Perceptrone.WriteToFile(sw1, Rij, numLines, numElementsInLine);
-            sw1.Close();
+            Perceptrone.CreateXlsxFile(connectionsFile, Rij, numLines, numElementsInLine);
 
-            FileStream fs2 = File.Create(lyambdaFile);
-            StreamWriter sw2 = new StreamWriter(fs2);
             lyambda = Perceptrone.Create(numElementsInLine);
-            Perceptrone.WriteToFile(sw2, lyambda, numElementsInLine);
-            sw2.Close();
+            Perceptrone.CreateXlsxFile(lyambdaFile, lyambda, numElementsInLine);
 
             buttonCreateConsts.Enabled = false;
         }
@@ -102,6 +91,12 @@ namespace Kovaleva_lab_sem6
             y = Perceptrone.CalculateY(numLines, numElementsInLine, Rij, pictureArray);
             R1 = Perceptrone.GetSignal(firstBound, secondBound, lyambda, y);
             R2 = Perceptrone.GetSignal(secondBound, thirdBound, lyambda, y);
+            sum1 = Perceptrone.GetSum(firstBound, secondBound, lyambda, y);
+            sum2 = Perceptrone.GetSum(secondBound, thirdBound, lyambda, y);
+            labelR1.Text = "R1: " + R1;
+            labelR2.Text = " R2: " + R2;
+            labelSum1.Text = "Sum1: " + sum1;
+            labelSum2.Text = " Sum2: " + sum2;
             if (TypeA.Checker(R1, R2))
                 labelResult.Text = "Это 0";
             else if (TypeB.Checker(R1, R2))
@@ -114,223 +109,49 @@ namespace Kovaleva_lab_sem6
 
         private void ButtonDownloadConsts_Click(object sender, EventArgs e)
         {
-            FileStream fs1 = File.OpenRead(connectionsFile);
-            StreamReader sr1 = new StreamReader(fs1);
+            var sr1 = File.Open(connectionsFile, FileMode.Open, FileAccess.Read);
             Rij = Perceptrone.ReadFromFile(sr1, numLines, numElementsInLine);
+            sr1.Close();
 
-            FileStream fs2 = File.OpenRead(lyambdaFile);
-            StreamReader sr2 = new StreamReader(fs2);
-            lyambda = Perceptrone.ReadFromFile(sr2);
+            var sr2 = File.Open(lyambdaFile, FileMode.Open, FileAccess.Read);
+            lyambda = Perceptrone.ReadLyambdaFromFile(sr2, numLines, numElementsInLine);
+            sr2.Close();
         }
 
         private void ButtonTeachA_Click(object sender, EventArgs e)
         {
-            lyambda = Perceptrone.Teach(lyambda, TypeA.CalculateDelta(TypeA.R1), firstBound, secondBound);
-            lyambda = Perceptrone.Teach(lyambda, TypeA.CalculateDelta(TypeA.R2), secondBound, thirdBound);
+            lyambda = Perceptrone.Teach(lyambda, y, TypeA.CalculateDelta(TypeA.R1), firstBound, secondBound);
+            lyambda = Perceptrone.Teach(lyambda, y, TypeA.CalculateDelta(TypeA.R2), secondBound, thirdBound);
 
-            StreamWriter sw = File.AppendText(lyambdaFile);
-            Perceptrone.WriteToFile(sw, lyambda, numElementsInLine);
-            sw.Close();
-            StreamWriter sw2 = File.AppendText(yFile);
-            Perceptrone.WriteToFile(sw2, y, numElementsInLine);
-            sw2.Close();
+            Perceptrone.EditXlsxFile(lyambdaFile, lyambda, numElementsInLine);
+            Perceptrone.EditXlsxFile(yFile, y, numElementsInLine);
         }
 
         private void ButtonTeachB_Click(object sender, EventArgs e)
         {
-            lyambda = Perceptrone.Teach(lyambda, TypeB.CalculateDelta(TypeB.R1), firstBound, secondBound);
-            lyambda = Perceptrone.Teach(lyambda, TypeB.CalculateDelta(TypeB.R2), secondBound, thirdBound);
+            lyambda = Perceptrone.Teach(lyambda, y, TypeB.CalculateDelta(TypeB.R1), firstBound, secondBound);
+            lyambda = Perceptrone.Teach(lyambda, y, TypeB.CalculateDelta(TypeB.R2), secondBound, thirdBound);
 
-            StreamWriter sw = File.AppendText(lyambdaFile);
-            Perceptrone.WriteToFile(sw, lyambda, numElementsInLine);
-            sw.Close();
-            StreamWriter sw2 = File.AppendText(yFile);
-            Perceptrone.WriteToFile(sw2, y, numElementsInLine);
-            sw2.Close();
+            Perceptrone.EditXlsxFile(lyambdaFile, lyambda, numElementsInLine);
+            Perceptrone.EditXlsxFile(yFile, y, numElementsInLine);
         }
 
         private void ButtonTeachC_Click(object sender, EventArgs e)
         {
-            lyambda = Perceptrone.Teach(lyambda, TypeC.CalculateDelta(TypeC.R1), firstBound, secondBound);
-            lyambda = Perceptrone.Teach(lyambda, TypeC.CalculateDelta(TypeC.R2), secondBound, thirdBound);
+            lyambda = Perceptrone.Teach(lyambda, y, TypeC.CalculateDelta(TypeC.R1), firstBound, secondBound);
+            lyambda = Perceptrone.Teach(lyambda, y, TypeC.CalculateDelta(TypeC.R2), secondBound, thirdBound);
 
-            StreamWriter sw = File.AppendText(lyambdaFile);
-            Perceptrone.WriteToFile(sw, lyambda, numElementsInLine);
-            sw.Close();
-            StreamWriter sw2 = File.AppendText(yFile);
-            Perceptrone.WriteToFile(sw2, y, numElementsInLine);
-            sw2.Close();
+            Perceptrone.EditXlsxFile(lyambdaFile, lyambda, numElementsInLine);
+            Perceptrone.EditXlsxFile(yFile, y, numElementsInLine);
         }
 
         private void ButtonTeachD_Click(object sender, EventArgs e)
         {
-            lyambda = Perceptrone.Teach(lyambda, TypeD.CalculateDelta(TypeD.R1), firstBound, secondBound);
-            lyambda = Perceptrone.Teach(lyambda, TypeD.CalculateDelta(TypeD.R2), secondBound, thirdBound);
+            lyambda = Perceptrone.Teach(lyambda, y, TypeD.CalculateDelta(TypeD.R1), firstBound, secondBound);
+            lyambda = Perceptrone.Teach(lyambda, y, TypeD.CalculateDelta(TypeD.R2), secondBound, thirdBound);
 
-            StreamWriter sw = File.AppendText(lyambdaFile);
-            Perceptrone.WriteToFile(sw, lyambda, numElementsInLine);
-            sw.Close();
-            StreamWriter sw2 = File.AppendText(yFile);
-            Perceptrone.WriteToFile(sw2, y, numElementsInLine);
-            sw2.Close();
-        }
-    }
-
-    public class MatrixMain
-    {
-
-        public int[,] Create(int numLines, int numElementsInLine)
-        {
-            Random rand = new Random();
-            int placeInLine;
-            int decision;
-            int[,] Rij = new int[numLines, numElementsInLine];
-
-            for (int i = 0; i < numLines; i++)
-            {
-                for (int j = 0; j < numElementsInLine; j++)
-                {
-                    Rij[i, j] = 0;
-                }
-                placeInLine = rand.Next(0, numElementsInLine);
-                decision = rand.Next(0, 2);
-                Rij[i, placeInLine] = (decision == 0) ? 1 : -1;
-
-            }
-            return Rij;
-        }
-
-        public int[] Create(int numElementsInLine)
-        {
-            Random rand = new Random();
-            int decision;
-            int[] lyambda = new int[numElementsInLine];
-
-            for (int j = 0; j < numElementsInLine; j++)
-            {
-                decision = rand.Next(0, 2);
-                lyambda[j] = (decision == 0) ? 1 : -1;
-            }
-            return lyambda;
-        }
-
-        public void WriteToFile(StreamWriter sw, int[,] array2D, int numLines, int numElementsInLine)
-        {
-            for (int i = 0; i < numLines; i++)
-            {
-                for (int j = 0; j < numElementsInLine; j++)
-                {
-                    sw.Write(array2D[i, j] + " ");
-                }
-                sw.WriteLine();
-            }
-            sw.Flush();
-        }
-
-        public void WriteToFile(StreamWriter sw, int[] array, int numElementsInLine)
-        {
-            for (int j = 0; j < numElementsInLine; j++)
-            {
-                sw.Write(array[j] + " ");
-            }
-            sw.WriteLine();
-            sw.Flush();
-        }
-
-        public int[,] ReadFromFile(StreamReader sr, int numLines, int numElementsInLine)
-        {
-            int[,] arrayRes = new int[numLines, numElementsInLine];
-            for (int j = 0; j < numLines; j++)
-            {
-                string[] nums = sr.ReadLine().Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-                for (int i = 0; i < numElementsInLine; i++)
-                {
-                    arrayRes[j, i] = int.Parse(nums[i]);
-                }
-            }
-            sr.Close();
-            return arrayRes;
-        }
-
-        public int[] ReadFromFile(StreamReader sr)
-        {
-            string[] nums = sr.ReadLine().Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-            int[] arrayRes = new int[nums.Length];
-            for (int i = 0; i < nums.Length; i++)
-            {
-                arrayRes[i] = int.Parse(nums[i]);
-            }
-            sr.Close();
-            return arrayRes;
-        }
-
-        public int[] CalculateY(int numLines, int numElementsInLine, int[,] Rij, int[] pictureArray)
-        {
-            int sumy;
-            const int teta = 1;
-            int[] y = new int[numElementsInLine];
-
-            for (int j = 0; j < numElementsInLine; j++)
-            {
-                sumy = 0;
-                for (int i = 0; i < numLines; i++)
-                {
-                    sumy += Rij[i, j] * pictureArray[i];
-                }
-                y[j] = (sumy - teta) >= 0 ? 1 : 0;
-            }
-            return y;
-        }
-
-        public int[] Teach(int[] lyambda, int deltaLyambda, int lowerBound, int upperBound)
-        {
-            for (int i = lowerBound; i < upperBound; i++)
-            {
-                lyambda[i] += deltaLyambda;
-            }
-            return lyambda;
-        }
-
-        public int GetSignal(int lowerBound, int upperBound, int[] lyambda, int[] y)
-        {
-            int sum = 0;
-            for (int i = lowerBound; i < upperBound; i++)
-            {
-                sum += lyambda[i] * y[i];
-            }
-            int R = (sum) >= 0 ? 1 : 0;
-            return R;
-        }
-    }
-
-    public class NumberSign : MatrixMain
-    {
-        public NumberSign(int R1, int R2)
-        {
-            this.R1 = R1;
-            this.R2 = R2;
-        }
-
-        public int R1 { get; }
-
-        public int R2 { get; }
-
-        public bool Checker(int testR1, int testR2)
-        {
-            if (R1 == testR1 && R2 == testR2)
-                return true;
-            else
-                return false;
-        }
-
-        public int CalculateDelta(int R)
-        {
-            int delta;
-            if (R == 1)
-                delta = 1;
-            else
-                delta = -1;
-            return delta;
+            Perceptrone.EditXlsxFile(lyambdaFile, lyambda, numElementsInLine);
+            Perceptrone.EditXlsxFile(yFile, y, numElementsInLine);
         }
     }
 }
